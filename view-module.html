@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Staff Portal</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    
+    <script src="script.js"></script>
+</head>
+</head>
+
+<body>
+    <nav class="navbar navbar-light bg-light">
+        <div class='container-fluid'>
+            <span class="navbar-brand mb-0 h1">BT3103 Dashboard</span>
+            <div>
+                Welcome back, Professor Chris!
+                <a href='' class='nav-icon'>
+                    <i class='fas fa-cog'></i>
+                </a>
+            </div>
+        </div>
+    </nav>
+    <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
+            <a class="navbar-brand" href="demo.html">Demographics</a>
+            <a class="navbar-brand" href="acad.html">Academics</a>
+            <a class="navbar-brand" href="stud.html">Student Enrollment</a>
+    </nav>
+    <div style = "width:500px;height:600px;">
+    <div id="app">
+            <input v-model.trim="inputModCode" placeholder="Module code">
+        <p>Display grades: {{inputModCode}}</p>
+        <div v-if="loaded">
+          <pie-chart :data="modules[inputModCode.toUpperCase()]"></pie-chart>
+
+          
+        </div>
+    
+        </div>
+    
+        <script src="https://unpkg.com/vue"></script>
+      <script src="https://unpkg.com/chart.js@2.7.2/dist/Chart.bundle.js"></script>
+      <script src="https://unpkg.com/vue-chartkick@0.4.0"></script>
+    
+        <script>
+            var app = new Vue({
+          el:"#app",
+          data: {
+               foodData: {'Green': {'a':1}, 'Korean': 1, 'Jap': 1, 'Chinese Noodles':8},
+           module_code: [],
+           modules: {},
+           inputModCode: '',
+           loaded: false,
+           databaseUrl: 'https://alset-md.firebaseio.com/nusSynData/module_enrolment.json',
+          },
+        mounted: function () { //Will start at zero if you don't update on init
+            this.update();
+            this.loaded = true
+          },
+        methods:{
+            update: function() {
+              fetch(this.databaseUrl) 
+              .then((response) => { 
+                return response.json(); }) 
+              .then((myJson) => { 
+                console.log("Updated remote counter",myJson)
+                if(myJson) {
+                    for (let key in myJson){
+                      //console.log(key)
+                      if (myJson[key].final_grade !== "") {
+                        //group all grades by modules
+                        // {module_code:[final_grade]}
+                        if (!this.modules[myJson[key].module_code]) {
+                                    this.modules[myJson[key].module_code] = []
+                          }
+                                  this.modules[myJson[key].module_code].push(myJson[key].final_grade)
+                        
+                      }
+                    }
+                    // count occurence of grades by modules
+                    // {module_code:{final_grade:num}}
+                    this.modules = this.countAllOccur(this.modules)
+                            console.log(this.modules)
+                    console.log(this.foodData)
+                }
+                  
+                });
+            },
+            countOccur: function(array, counts) {
+              for (var i = 0; i < array.length; i++) { 
+                var num = String(array[i]); 
+                counts[num] = counts[num] ? counts[num] + 1 : 1;
+                    }
+              return counts
+            },
+            countAllOccur: function(obj){
+              var temp = {}
+              for (k in obj) {
+                temp[k] = this.countOccur(obj[k], {})
+               }
+              return temp
+            }
+          }
+        })
+        </script>    
+        </div>
+
+
+</body>
