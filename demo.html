@@ -23,6 +23,17 @@
     <nav class="navbar navbar-light bg-light">
         <div class='container-fluid'>
             <span class="navbar-brand mb-0 h1"> {{module_name}} Dashboard</span>
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Modules in this semester
+                  </a>
+                  <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="demo.html?module_name=CS2010">CS2010</a>
+                    <a class="dropdown-item" href="demo.html?module_name=CS2100">CS2100</a>    
+                  </div>
+                </li>
+                </ul>
             <div>
                 Welcome back, Professor Chris!
                 <a href='' class='nav-icon'>
@@ -32,12 +43,13 @@
         </div>
     </nav>
     <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
-            <a class="navbar-brand" :href="'demo.html?module_name='+module_name" >Demographics</a>
+            <a class="navbar-brand" :href="'demo.html?module_name='+module_name" ><u>Demographics</u></a>
             <a class="navbar-brand" :href="'acad.html?module_name='+module_name" >Academics</a>
-            <a class="navbar-brand" href="stud.html">Student Enrollment</a>
+            <a class="navbar-brand" :href="'stud.html?module_name='+module_name">Student Enrollment</a>
     </nav>
 
-        <div style = "width:600px;height:700px;float:left">
+
+        <div style = "width:600px;height:500px;float:left">
 
             <p>Display students' year of study: {{module_name}}</p>
             <div v-if="module_name.toUpperCase()!= ''">
@@ -50,7 +62,7 @@
         </div>
     
 
-        <div style = "width:500px;height:600px;float:left">
+        <div style = "width:500px;height:500px;float:left; width:42%">
                 <p>CAP of students who have taken {{module_name}} </p>
                 <column-chart :data="degreeClassification_Count" xtitle="Degree Classification" ytitle="Percentage" :messages="{empty: 'No data'}"
                  :library="{
